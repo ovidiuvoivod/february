@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine Quiz 💖</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: 'Poppins', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #ffdde1, #ee9ca7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow: hidden;
+        }
+
+        .card {
+            background: white;
+            border-radius: 24px;
+            max-width: 420px;
+            width: 100%;
+            padding: 28px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            animation: fadeIn 0.4s ease;
+            z-index: 2;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        p {
+            font-size: 16px;
+            color: #555;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 14px;
+            margin-top: 12px;
+            border-radius: 14px;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            background: #ff6f91;
+            color: white;
+            transition: transform 0.1s ease, background 0.2s ease;
+        }
+
+        .btn:hover {
+            background: #ff4f7b;
+            transform: scale(1.02);
+        }
+
+        .option {
+            background: #f7f7f7;
+            color: #333;
+        }
+
+        .option:hover {
+            background: #ffe4ec;
+        }
+
+        .progress {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 12px;
+        }
+
+        .heart {
+            font-size: 48px;
+            animation: pulse 1.2s infinite;
+            margin-bottom: 10px;
+        }
+
+        /* Confetti */
+        .confetti {
+            position: absolute;
+            top: -10px;
+            font-size: 18px;
+            animation: fall 3s linear forwards;
+            opacity: 0.9;
+            pointer-events: none;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.15);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(110vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card" id="app"></div>
+
+<script>
+    const app = document.getElementById("app");
+
+    const questions = [
+        {
+            q: "Where was our first date? 💕",
+            a: [
+                "A restaurant 🍽️",
+                "A coffee place ☕️",
+                "A lake 🌅",
+                "My place 😅"
+            ],
+            correct: 2
+        },
+        {
+            q: "What do we always say before sleeping? 🌙",
+            a: [
+                "Just one more episode 📺",
+                "We should sleep 😴",
+                "I love you 💌",
+                "All of the above ❤️"
+            ],
+            correct: 3
+        },
+        {
+            q: "What’s our biggest talent as a couple? 😌",
+            a: [
+                "Laughing at stupid things",
+                "Talking for hours",
+                "Supporting each other",
+                "All of the above"
+            ],
+            correct: 3
+        },
+        {
+            q: "Choose our perfect date night 💘",
+            a: [
+                "Movie + snacks 🍿",
+                "Late walk & talking 🌃",
+                "Dinner + dessert 🍰",
+                "Anywhere, together ❤️"
+            ],
+            correct: -1
+        },
+        {
+            q: "Ready for your prize? 🎁",
+            a: [
+                "YES 😍",
+                "Obviously 🙄",
+                "I was born ready",
+                "Surprise me 😏"
+            ],
+            correct: -1
+        }
+    ];
+
+    let current = 0;
+
+    function renderStart() {
+        app.innerHTML = `
+      <div class="heart">💖</div>
+      <h1>Mini Quiz Time</h1>
+      <p>Answer a few questions<br>to unlock your prize 🎁</p>
+      <button class="btn" onclick="renderQuestion()">Start Quiz</button>
+    `;
+    }
+
+    function renderQuestion() {
+        const q = questions[current];
+        let html = `<div class="progress">Question ${current + 1} / ${questions.length}</div>`;
+        html += `<h1>${q.q}</h1>`;
+        q.a.forEach((answer, index) => {
+            html += `<button class="btn option" onclick="next(${index})">${answer}</button>`;
+        });
+        app.innerHTML = html;
+    }
+
+    function next(index) {
+        if (questions[current].correct == index || questions[current].correct == -1) {
+            current++;
+            if (current < questions.length) {
+                renderQuestion();
+            } else {
+                renderPrize();
+            }
+        } else {
+            tryAgain(); // exit function here, do NOT continue
+        }
+    }
+
+    function renderPrize() {
+        app.innerHTML = `
+      <div class="heart">💘</div>
+      <h1>Prize Unlocked</h1>
+      <p>You officially passed the quiz.<br><br>So I was wondering…</p>
+      <h1>Will you be my Valentine? ❤️</h1>
+      <button class="btn" onclick="yes()">YES 💖</button>
+      <button class="btn" onclick="yes()">Obviously 🙄</button>
+    `;
+    }
+
+    function tryAgain() {
+        app.innerHTML = `
+      <div class="heart">💘</div>
+      <h1>Try again...</h1>
+      <p>Wrong answer. Start again.<br>
+      <button class="btn" onclick="renderStart()">Restart</button>
+    `;
+    }
+
+    function yes() {
+        launchConfetti();
+        app.innerHTML = `
+      <div class="heart">🥰</div>
+      <h1>Best Answer Ever</h1>
+      <p>6 years down,<br>forever to go ❤️</p>
+      <p>See you on Valentine’s Day 😘</p>
+    `;
+    }
+
+    function launchConfetti() {
+        const emojis = ["💖", "💘", "💕"];
+        for (let i = 0; i < 30; i++) {
+            const confetti = document.createElement("div");
+            confetti.className = "confetti";
+            confetti.style.left = Math.random() * 100 + "vw";
+            confetti.style.animationDuration = (2 + Math.random() * 2) + "s";
+            confetti.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+            document.body.appendChild(confetti);
+            setTimeout(() => confetti.remove(), 4000);
+        }
+    }
+
+    renderStart();
+</script>
+
+</body>
+</html>
+        
